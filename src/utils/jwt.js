@@ -1,4 +1,7 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
@@ -17,8 +20,8 @@ if (!JWT_SECRET) {
 export const generateToken = (payload) => {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
-    issuer: 'banklens-api',
-    audience: 'banklens-client'
+    issuer: 'wyse-api',
+    audience: 'wyse-client'
   });
 };
 
@@ -30,8 +33,8 @@ export const generateToken = (payload) => {
 export const verifyToken = (token) => {
   try {
     return jwt.verify(token, JWT_SECRET, {
-      issuer: 'banklens-api',
-      audience: 'banklens-client'
+      issuer: 'wyse-api',
+      audience: 'wyse-client'
     });
   } catch (error) {
     throw new Error('Invalid or expired token');
@@ -58,7 +61,7 @@ export const generateUserToken = (user) => {
     email: user.email,
     isEmailVerified: user.isEmailVerified
   };
-  
+
   return generateToken(payload);
 };
 
@@ -71,6 +74,6 @@ export const extractTokenFromHeader = (authHeader) => {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
   }
-  
+
   return authHeader.substring(7); // Remove 'Bearer ' prefix
 }; 

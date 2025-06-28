@@ -38,7 +38,6 @@ const otpSchema = new mongoose.Schema({
 
 // Index for faster queries
 otpSchema.index({ email: 1, type: 1 });
-otpSchema.index({ expiresAt: 1 });
 
 // Static method to create OTP
 otpSchema.statics.createOTP = function(email, type = 'email_verification', ipAddress = null, userAgent = null) {
@@ -73,9 +72,38 @@ otpSchema.statics.verifyOTP = async function(email, otp, type = 'email_verificat
   // Increment attempts
   otpDoc.attempts += 1;
   
-  // Mark as used if valid
+  // Mark as used if valid (except for password_reset which will be marked later)
   if (otpDoc.otp === otp) {
-    otpDoc.isUsed = true;
+    if (type !== 'password_reset') {
+      otpDoc.isUsed = true;
+    }
+    await otpDoc.save();
+    return { isValid: true, message: 'OTP verified successfully' };
+  }
+
+  await otpDoc.save();
+  return { isValid: false, message: 'Invalid OTP' };
+};
+
+// Static method to verify OTP without marking as used (for password reset)
+otpSchema.statics.verifyOTPWithoutMarking = async function(email, otp, type = 'email_verification') {
+  const otpDoc = await this.findOne({
+    email: email.toLowerCase(),
+    otp,
+    type,
+    isUsed: false,
+    expiresAt: { $gt: new Date() }
+  });
+
+  if (!otpDoc) {
+    return { isValid: false, message: 'Invalid or expired OTP' };
+  }
+
+  // Increment attempts
+  otpDoc.attempts += 1;
+  
+  // Don't mark as used, just verify
+  if (otpDoc.otp === otp) {
     await otpDoc.save();
     return { isValid: true, message: 'OTP verified successfully' };
   }

@@ -1,7 +1,7 @@
 {
   "name": "wyse-backend",
   "version": "1.0.0",
-  "description": "BankLens Backend API - Financial Intelligence Platform",
+  "description": "Wyse Backend API - Financial Intelligence Platform",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -17,7 +17,7 @@
     "express",
     "nodejs"
   ],
-  "author": "BankLens Team",
+  "author": "Wyse Team",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",

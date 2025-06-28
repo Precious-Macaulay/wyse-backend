@@ -1,6 +1,6 @@
-# BankLens Backend API
+# Wyse Backend API
 
-A secure, scalable backend API for the BankLens financial intelligence platform built with Node.js, Express, and MongoDB.
+A secure, scalable backend API for the Wyse financial intelligence platform built with Node.js, Express, and MongoDB.
 
 ## 🚀 Features
 
@@ -43,7 +43,7 @@ A secure, scalable backend API for the BankLens financial intelligence platform 
    NODE_ENV=development
 
    # MongoDB Configuration
-   MONGODB_URI=mongodb://localhost:27017/banklens
+   MONGODB_URI=mongodb://localhost:27017/wyse
 
    # JWT Configuration
    JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -54,7 +54,7 @@ A secure, scalable backend API for the BankLens financial intelligence platform 
    EMAIL_PORT=587
    EMAIL_USER=your-email@gmail.com
    EMAIL_PASS=your-app-password
-   EMAIL_FROM=BankLens <noreply@banklens.com>
+   EMAIL_FROM=Wyse <noreply@wyse.com>
 
    # CORS Configuration
    CORS_ORIGIN=http://localhost:5173
@@ -305,7 +305,7 @@ EMAIL_HOST=your-smtp-host
 EMAIL_PORT=587
 EMAIL_USER=your-email@domain.com
 EMAIL_PASS=your-password
-EMAIL_FROM=BankLens <noreply@banklens.com>
+EMAIL_FROM=Wyse <noreply@wyse.com>
 ```
 
 ## 🗄️ Database Schema
@@ -332,7 +332,7 @@ EMAIL_FROM=BankLens <noreply@banklens.com>
 ### Environment Variables for Production
 ```env
 NODE_ENV=production
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/banklens
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/wyse
 JWT_SECRET=your-production-jwt-secret
 CORS_ORIGIN=https://your-frontend-domain.com
 ```
@@ -340,7 +340,7 @@ CORS_ORIGIN=https://your-frontend-domain.com
 ### PM2 Deployment
 ```bash
 npm install -g pm2
-pm2 start src/server.js --name "banklens-api"
+pm2 start src/server.js --name "wyse-api"
 pm2 save
 pm2 startup
 ```

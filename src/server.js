@@ -41,7 +41,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    message: 'BankLens API is running',
+    message: 'Wyse API is running',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV
   });
@@ -69,7 +69,7 @@ const startServer = async () => {
     await connectDB();
     
     app.listen(PORT, () => {
-      console.log(`🚀 BankLens API server running on port ${PORT}`);
+      console.log(`🚀 Wyse API server running on port ${PORT}`);
       console.log(`📊 Environment: ${process.env.NODE_ENV}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);
       console.log(`📧 API Base URL: http://localhost:${PORT}/api`);

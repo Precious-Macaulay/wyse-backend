@@ -4,12 +4,9 @@ export const connectDB = async () => {
   try {
     const mongoURI = process.env.NODE_ENV === 'production' 
       ? process.env.MONGODB_URI_PROD 
-      : process.env.MONGODB_URI || 'mongodb://localhost:27017/banklens';
+      : process.env.MONGODB_URI || 'mongodb://localhost:27017/wyse';
 
-    const conn = await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await mongoose.connect(mongoURI);
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
     

@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 
 // Create transporter
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
     secure: process.env.EMAIL_PORT === '465', // true for 465, false for other ports
@@ -27,11 +27,11 @@ export const sendOTPEmail = async (email, otp, type = 'email_verification') => {
   
   switch (type) {
     case 'email_verification':
-      subject = 'Verify Your Email - BankLens';
+      subject = 'Verify Your Email - Wyse';
       htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #14b8a6; margin: 0;">BankLens</h1>
+            <h1 style="color: #14b8a6; margin: 0;">Wyse</h1>
             <p style="color: #6b7280; margin: 10px 0;">Your Financial Consciousness</p>
           </div>
           
@@ -63,18 +63,18 @@ export const sendOTPEmail = async (email, otp, type = 'email_verification') => {
           </div>
           
           <div style="text-align: center; color: #6b7280; font-size: 12px;">
-            <p>© 2025 BankLens. Financial consciousness for the future.</p>
+            <p>© 2025 Wyse. Financial consciousness for the future.</p>
           </div>
         </div>
       `;
       break;
       
     case 'password_reset':
-      subject = 'Reset Your Passcode - BankLens';
+      subject = 'Reset Your Passcode - Wyse';
       htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #14b8a6; margin: 0;">BankLens</h1>
+            <h1 style="color: #14b8a6; margin: 0;">Wyse</h1>
             <p style="color: #6b7280; margin: 10px 0;">Your Financial Consciousness</p>
           </div>
           
@@ -106,18 +106,18 @@ export const sendOTPEmail = async (email, otp, type = 'email_verification') => {
           </div>
           
           <div style="text-align: center; color: #6b7280; font-size: 12px;">
-            <p>© 2025 BankLens. Financial consciousness for the future.</p>
+            <p>© 2025 Wyse. Financial consciousness for the future.</p>
           </div>
         </div>
       `;
       break;
       
     default:
-      subject = 'Verification Code - BankLens';
+      subject = 'Verification Code - Wyse';
       htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #14b8a6; margin: 0;">BankLens</h1>
+            <h1 style="color: #14b8a6; margin: 0;">Wyse</h1>
             <p style="color: #6b7280; margin: 10px 0;">Your Financial Consciousness</p>
           </div>
           
@@ -149,14 +149,14 @@ export const sendOTPEmail = async (email, otp, type = 'email_verification') => {
           </div>
           
           <div style="text-align: center; color: #6b7280; font-size: 12px;">
-            <p>© 2025 BankLens. Financial consciousness for the future.</p>
+            <p>© 2025 Wyse. Financial consciousness for the future.</p>
           </div>
         </div>
       `;
   }
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM || 'BankLens <noreply@banklens.com>',
+    from: process.env.EMAIL_FROM || 'Wyse <noreply@wyse.com>',
     to: email,
     subject: subject,
     html: htmlContent,
@@ -182,23 +182,23 @@ export const sendWelcomeEmail = async (email, firstName = 'there') => {
   const transporter = createTransporter();
   
   const mailOptions = {
-    from: process.env.EMAIL_FROM || 'BankLens <noreply@banklens.com>',
+    from: process.env.EMAIL_FROM || 'Wyse <noreply@wyse.com>',
     to: email,
-    subject: 'Welcome to BankLens! 🎉',
+    subject: 'Welcome to Wyse! 🎉',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #14b8a6; margin: 0;">BankLens</h1>
+          <h1 style="color: #14b8a6; margin: 0;">Wyse</h1>
           <p style="color: #6b7280; margin: 10px 0;">Your Financial Consciousness</p>
         </div>
         
         <div style="background: #1f2937; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
-          <h2 style="color: #ffffff; margin: 0 0 20px 0; text-align: center;">Welcome to BankLens! 🎉</h2>
+          <h2 style="color: #ffffff; margin: 0 0 20px 0; text-align: center;">Welcome to Wyse! 🎉</h2>
           <p style="color: #d1d5db; margin: 0 0 20px 0;">
             Hi ${firstName},
           </p>
           <p style="color: #d1d5db; margin: 0 0 20px 0;">
-            Welcome to BankLens! Your account has been successfully created and your financial consciousness is now activated.
+            Welcome to Wyse! Your account has been successfully created and your financial consciousness is now activated.
           </p>
           
           <div style="background: #374151; border-radius: 8px; padding: 20px; margin: 20px 0;">
@@ -229,7 +229,7 @@ export const sendWelcomeEmail = async (email, firstName = 'there') => {
         </div>
         
         <div style="text-align: center; color: #6b7280; font-size: 12px;">
-          <p>© 2025 BankLens. Financial consciousness for the future.</p>
+          <p>© 2025 Wyse. Financial consciousness for the future.</p>
         </div>
       </div>
     `,

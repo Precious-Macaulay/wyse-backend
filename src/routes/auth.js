@@ -11,6 +11,8 @@ import { generateUserToken } from '../utils/jwt.js';
 import { sendOTPEmail, sendWelcomeEmail } from '../services/emailService.js';
 import User from '../models/User.js';
 import OTP from '../models/OTP.js';
+import { body } from 'express-validator';
+import { handleValidationErrors } from '../middleware/validation.js';
 
 const router = express.Router();
 
@@ -72,6 +74,153 @@ router.post('/verify-otp', validateOTP, asyncHandler(async (req, res) => {
     console.error('Verify OTP error:', error);
     res.status(500).json({
       error: 'Failed to verify OTP',
+      message: 'Please try again later'
+    });
+  }
+}));
+
+/**
+ * @route   POST /api/auth/send-reset-otp
+ * @desc    Send OTP to email for password reset
+ * @access  Public
+ */
+router.post('/send-reset-otp', validateEmail, asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const ipAddress = req.ip;
+  const userAgent = req.get('User-Agent');
+
+  try {
+    // Check if user exists
+    const existingUser = await User.findByEmail(email);
+    if (!existingUser) {
+      return res.status(404).json({
+        error: 'User not found',
+        message: 'No account found with this email address',
+        field: 'email'
+      });
+    }
+
+    // Create and send reset OTP
+    const otpDoc = await OTP.createOTP(email, 'password_reset', ipAddress, userAgent);
+    await sendOTPEmail(email, otpDoc.otp, 'password_reset');
+
+    res.status(200).json({
+      message: 'Password reset OTP sent successfully',
+      email: email
+    });
+  } catch (error) {
+    console.error('Send reset OTP error:', error);
+    res.status(500).json({
+      error: 'Failed to send reset OTP',
+      message: 'Please try again later'
+    });
+  }
+}));
+
+/**
+ * @route   POST /api/auth/verify-reset-otp
+ * @desc    Verify OTP for password reset
+ * @access  Public
+ */
+router.post('/verify-reset-otp', validateOTP, asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    // Verify reset OTP without marking as used
+    const result = await OTP.verifyOTPWithoutMarking(email, otp, 'password_reset');
+    
+    if (!result.isValid) {
+      return res.status(400).json({
+        error: 'Invalid OTP',
+        message: result.message
+      });
+    }
+
+    res.status(200).json({
+      message: 'Reset OTP verified successfully',
+      email: email
+    });
+  } catch (error) {
+    console.error('Verify reset OTP error:', error);
+    res.status(500).json({
+      error: 'Failed to verify reset OTP',
+      message: 'Please try again later'
+    });
+  }
+}));
+
+/**
+ * @route   POST /api/auth/reset-passcode
+ * @desc    Reset user passcode with verified OTP
+ * @access  Public
+ */
+router.post('/reset-passcode', [
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please enter a valid email address')
+    .normalizeEmail()
+    .toLowerCase(),
+  body('otp')
+    .trim()
+    .isLength({ min: 6, max: 6 })
+    .withMessage('OTP must be exactly 6 digits')
+    .isNumeric()
+    .withMessage('OTP must contain only numbers'),
+  body('newPasscode')
+    .trim()
+    .isLength({ min: 6, max: 6 })
+    .withMessage('Passcode must be exactly 6 digits')
+    .isNumeric()
+    .withMessage('Passcode must contain only numbers')
+    .custom((value) => {
+      // Check if all digits are the same
+      if (new Set(value).size === 1) {
+        throw new Error('Passcode cannot be all the same digit');
+      }
+      return true;
+    }),
+  handleValidationErrors
+], asyncHandler(async (req, res) => {
+  const { email, otp, newPasscode } = req.body;
+
+  try {
+    // Check if user exists
+    const user = await User.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({
+        error: 'User not found',
+        message: 'No account found with this email address',
+        field: 'email'
+      });
+    }
+
+    // Verify reset OTP (this will mark it as used)
+    const result = await OTP.verifyOTP(email, otp, 'password_reset');
+    if (!result.isValid) {
+      return res.status(400).json({
+        error: 'Invalid OTP',
+        message: 'Invalid or expired reset code',
+        field: 'otp'
+      });
+    }
+
+    // Update user passcode
+    user.passcode = newPasscode; // Will be hashed by pre-save middleware
+    user.security.lastPasswordChange = new Date();
+    await user.save();
+
+    // Invalidate all reset OTPs for this email
+    await OTP.invalidateOTPs(email, 'password_reset');
+
+    res.status(200).json({
+      message: 'Passcode reset successfully',
+      email: email
+    });
+  } catch (error) {
+    console.error('Reset passcode error:', error);
+    res.status(500).json({
+      error: 'Failed to reset passcode',
       message: 'Please try again later'
     });
   }

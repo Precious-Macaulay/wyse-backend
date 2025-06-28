@@ -26,7 +26,7 @@ app.get('/test', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
-    message: 'BankLens API is running',
+    message: 'Wyse API is running',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development'
   });

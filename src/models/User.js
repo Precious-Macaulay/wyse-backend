@@ -13,8 +13,6 @@ const userSchema = new mongoose.Schema({
   passcode: {
     type: String,
     required: [true, 'Passcode is required'],
-    minlength: [6, 'Passcode must be at least 6 characters'],
-    maxlength: [6, 'Passcode must be exactly 6 characters']
   },
   isEmailVerified: {
     type: Boolean,
@@ -78,7 +76,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Index for faster queries
-userSchema.index({ email: 1 });
+// userSchema.index({ email: 1 }); // Removed - email is already unique indexed
 userSchema.index({ createdAt: -1 });
 
 // Virtual for account lock status
@@ -86,9 +84,13 @@ userSchema.virtual('isLocked').get(function() {
   return !!(this.lockUntil && this.lockUntil > Date.now());
 });
 
-// Pre-save middleware to hash passcode
+// Pre-save middleware to hash passcode add minlength and maxlength
 userSchema.pre('save', async function(next) {
   if (!this.isModified('passcode')) return next();
+
+  if (this.passcode.length < 6 || this.passcode.length > 6) {
+    throw new Error('Passcode must be exactly 6 characters');
+  }
   
   try {
     const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
