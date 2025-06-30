@@ -20,7 +20,7 @@ export const authenticateToken = async (req, res, next) => {
     const decoded = verifyToken(token);
     
     // Find user
-    const user = await User.findById(decoded.userId).select('-passcode');
+    const user = await User.findById(decoded.userId).select('-passcode').populate('monoAccounts');
     
     if (!user) {
       return res.status(401).json({
@@ -73,7 +73,7 @@ export const optionalAuth = async (req, res, next) => {
 
     if (token) {
       const decoded = verifyToken(token);
-      const user = await User.findById(decoded.userId).select('-passcode');
+      const user = await User.findById(decoded.userId).select('-passcode').populate('monoAccounts');
       
       if (user && !user.isLocked) {
         req.user = user;

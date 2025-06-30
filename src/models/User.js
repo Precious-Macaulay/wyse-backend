@@ -53,6 +53,8 @@ const userSchema = new mongoose.Schema({
       default: 'NGN'
     }
   },
+  // Remove monoAccountId, add monoAccounts array for multi-bank support
+  monoAccounts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MonoAccount' }],
   security: {
     twoFactorEnabled: { type: Boolean, default: false },
     lastPasswordChange: { type: Date, default: Date.now },

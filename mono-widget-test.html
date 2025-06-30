@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mono Connect Widget Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/@mono.co/connect.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+    button { padding: 1em 2em; font-size: 1.2em; background: #3b82f6; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #2563eb; }
+    .info { margin-bottom: 2em; color: #334155; }
+  </style>
+</head>
+<body>
+  <div class="info">
+    <h2>Mono Connect Widget Test</h2>
+    <p>Click the button below to open the Mono Connect widget.<br>
+    After linking an account, you will get an <b>auth code</b> for backend testing.</p>
+    <p><b>Note:</b> Replace <code>your_mono_public_key</code> in the script with your real Mono public key.</p>
+  </div>
+  <button id="mono-btn">Open Mono Widget</button>
+  <div id="result" style="margin-top:2em;color:#334155;"></div>
+  <script>
+    function sendAuthCodeToBackend(code) {
+      document.getElementById('result').textContent = 'Exchanging code for accountId...';
+      fetch('http://localhost:4001/api/mono/exchange-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.accountId) {
+          document.getElementById('result').textContent = 'Account ID: ' + data.accountId;
+        } else {
+          document.getElementById('result').textContent = 'Error: ' + (data.error?.message || JSON.stringify(data.error));
+        }
+      })
+      .catch(err => {
+        document.getElementById('result').textContent = 'Network error: ' + err.message;
+      });
+    }
+    document.getElementById('mono-btn').onclick = function() {
+      const connect = new window.Connect({
+        key: 'test_pk_j1d0tmrbz6ugjgky79y0', // TODO: Replace with your real public key
+        onSuccess: ({ code }) => {
+          alert('Auth code: ' + code);
+          sendAuthCodeToBackend(code);
+        },
+        onClose: () => {
+          alert('Widget closed');
+        }
+      });
+      connect.setup();
+      connect.open();
+    };
+  </script>
+</body>
+</html> 

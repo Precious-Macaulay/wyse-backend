@@ -1,0 +1,262 @@
+--- Mono Test Script Output ---
+Error running test-mono.cjs: Error: Command failed: $env:MONO_SECRET_KEY="test_sk_qxx31o7m0h8uzkjoe0e0"; $env:MONO_ACCOUNT_ID="686265c6c41fad92985e806c"; node test-mono.cjs
+API Error: 404 {
+  status: 'failed',
+  message: 'No webhook found for app',
+  timestamp: '2025-06-30T10:24:11.921Z',
+  data: null
+}
+
+
+=== Account Information ===
+{
+  status: 'successful',
+  message: 'Request was succesfully completed',
+  timestamp: '2025-06-30T10:24:11.406Z',
+  data: {
+    account: {
+      id: '686265c6c41fad92985e806c',
+      name: 'Samuel Olamide',
+      account_number: '0131883461',
+      currency: 'NGN',
+      balance: 10000000,
+      type: 'SAVINGS_ACCOUNT',
+      bvn: '9422',
+      institution: {
+        name: 'Standard Chartered',
+        bank_code: '068',
+        type: 'PERSONAL_BANKING'
+      }
+    },
+    customer: { id: '686265c6c41fad92985e806a' },
+    meta: {
+      data_status: 'AVAILABLE',
+      auth_method: 'internet_banking',
+      session_id: '9NvG1VXdRqUortH8JFtU'
+    }
+  }
+}
+
+=== Transactions ===
+{
+  status: 'successful',
+  message: 'Transaction retrieved successfully',
+  timestamp: '2025-06-30T10:24:11.662Z',
+  data: [
+    {
+      id: '686265c6ff3885e5e53ab124',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 20',
+      amount: 5959043,
+      type: 'debit',
+      category: null,
+      currency: 'NGN',
+      balance: 5142770,
+      date: '2025-06-18T07:02:34.588Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab11e',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 14',
+      amount: 6366507,
+      type: 'debit',
+      category: null,
+      currency: 'NGN',
+      balance: 691393,
+      date: '2025-06-21T17:27:04.196Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab111',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 1',
+      amount: 564389,
+      type: 'debit',
+      category: null,
+      currency: 'NGN',
+      balance: 9435611,
+      date: '2025-06-30T09:24:06.547Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab112',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 2',
+      amount: 675490,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 10111101,
+      date: '2025-06-29T22:11:07.438Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab11a',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 10',
+      amount: 2097800,
+      type: 'debit',
+      category: null,
+      currency: 'NGN',
+      balance: 9785691,
+      date: '2025-06-25T04:06:01.474Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab12e',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 30',
+      amount: 5944006,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 8579894,
+      date: '2025-06-10T21:44:57.377Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab142',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 50',
+      amount: 3513218,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 12048578,
+      date: '2025-05-28T15:39:58.035Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab145',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 53',
+      amount: 3535476,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 12335066,
+      date: '2025-05-26T09:18:53.394Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab14b',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 59',
+      amount: 6358390,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 33889991,
+      date: '2025-05-22T14:26:57.025Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab146',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 54',
+      amount: 8478699,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 20813765,
+      date: '2025-05-25T11:13:13.794Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab113',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 3',
+      amount: 1150104,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 11261205,
+      date: '2025-06-29T10:08:56.829Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab115',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 5',
+      amount: 3992221,
+      type: 'debit',
+      category: null,
+      currency: 'NGN',
+      balance: 5384069,
+      date: '2025-06-28T06:04:41.918Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab116',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 6',
+      amount: 4012296,
+      type: 'debit',
+      category: null,
+      currency: 'NGN',
+      balance: 1371773,
+      date: '2025-06-27T06:37:52.364Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab117',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 7',
+      amount: 6406706,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 7778479,
+      date: '2025-06-26T20:18:46.835Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab119',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 9',
+      amount: 9857345,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 11883491,
+      date: '2025-06-25T17:51:49.083Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab11d',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 13',
+      amount: 6691870,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 7057900,
+      date: '2025-06-22T14:38:33.384Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab11f',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 15',
+      amount: 9255782,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 9947175,
+      date: '2025-06-21T05:34:37.820Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab125',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 21',
+      amount: 2875851,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 8018621,
+      date: '2025-06-17T15:26:40.942Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab134',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 36',
+      amount: 5904916,
+      type: 'debit',
+      category: null,
+      currency: 'NGN',
+      balance: 796268,
+      date: '2025-06-07T03:39:07.170Z'
+    },
+    {
+      id: '686265c6ff3885e5e53ab135',
+      narration: 'NIP/KUDA/SAMUEL OLAMIDE/TRANSFER 37',
+      amount: 3900626,
+      type: 'credit',
+      category: null,
+      currency: 'NGN',
+      balance: 4696894,
+      date: '2025-06-06T17:58:08.194Z'
+    }
+  ],
+  meta: {
+    total: 278,
+    page: 1,
+    previous: null,
+    next: 'https://api.withmono.com/v2/accounts/686265c6c41fad92985e806c/transactions?page=2'
+  }
+}
+
+API Error: 404 {
+  status: 'failed',
+  message: 'No webhook found for app',
+  timestamp: '2025-06-30T10:24:11.921Z',
+  data: null
+}
+
+--- End Mono Test Script Output ---

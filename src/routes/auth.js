@@ -289,7 +289,8 @@ router.post('/signup', validateSignup, asyncHandler(async (req, res) => {
         email: user.email,
         isEmailVerified: user.isEmailVerified,
         createdAt: user.createdAt,
-        updatedAt: user.updatedAt
+        updatedAt: user.updatedAt,
+        monoAccounts: user.monoAccounts || []
       },
       token
     });
@@ -386,7 +387,8 @@ router.post('/signin', validateSignin, asyncHandler(async (req, res) => {
         email: user.email,
         isEmailVerified: user.isEmailVerified,
         createdAt: user.createdAt,
-        updatedAt: user.updatedAt
+        updatedAt: user.updatedAt,
+        monoAccounts: user.monoAccounts || []
       },
       token
     });
@@ -426,7 +428,8 @@ router.get('/verify', authenticateToken, asyncHandler(async (req, res) => {
       email: req.user.email,
       isEmailVerified: req.user.isEmailVerified,
       createdAt: req.user.createdAt,
-      updatedAt: req.user.updatedAt
+      updatedAt: req.user.updatedAt,
+      monoAccounts: req.user.monoAccounts || []
     }
   });
 }));
