@@ -1,3 +1,6 @@
+# What is Wyse?
+Wyse is a modern financial intelligence platform that brings all your Nigerian bank accounts and transactions into one unified, intelligent dashboard. With Wyse, you can instantly search, filter, and chat with your financial data using natural language—no more endless scrolling or manual reconciliation. Whether you’re a small business owner or an individual, Wyse helps you track spending, spot trends, and answer questions like “How much did I spend on supplies last month?” in seconds. By automating the tedious process of reviewing and categorizing transactions, Wyse saves you hours of painful reconciliation, reduces errors, and gives you real-time insights that empower smarter decisions and financial peace of mind.
+
 # Wyse Backend API
 
 This is the backend API for Wyse, a financial intelligence platform I built to help users connect multiple Nigerian bank accounts, manage transactions, and get insights using natural language AI.
