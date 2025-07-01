@@ -126,7 +126,7 @@ router.post('/exchange-code', authenticateToken, async (req, res) => {
 
     // Save transactions to DB (upsert by monoId+monoAccount)
     for (const tx of transactions) {
-      await Transaction.findOneAndUpdate(
+      const savedTransaction = await Transaction.findOneAndUpdate(
         { monoId: tx.id, monoAccount: monoAccount._id },
         {
           monoId: tx.id,
@@ -143,6 +143,34 @@ router.post('/exchange-code', authenticateToken, async (req, res) => {
         },
         { upsert: true, new: true, setDefaultsOnInsert: true }
       );
+
+      // Insert each transaction into the user's MindsDB knowledge base after saving to MongoDB
+      try {
+        const mindsdbService = (await import('../services/mindsdbService.js')).default;
+        await mindsdbService.createKnowledgeBase(user._id);
+        await mindsdbService.insertTransaction({
+          narration: tx.narration,
+          amount: tx.amount,
+          type: tx.type,
+          category: tx.category || 'uncategorized',
+          currency: tx.currency,
+          date: new Date(tx.date),
+          userId: user._id,
+          accountId: monoAccount._id,
+          institutionName: accountData.institution.name
+        });
+      } catch (mindsdbError) {
+        console.warn('Failed to insert transaction into MindsDB:', mindsdbError);
+        // I don't want a MindsDB error to block the sync
+      }
+    }
+
+    // After syncing, ensure a background job is set up to keep the KB updated
+    try {
+      const mindsdbService = (await import('../services/mindsdbService.js')).default;
+      await mindsdbService.createUserSyncJob(user._id);
+    } catch (jobError) {
+      console.warn('Failed to create MindsDB sync JOB:', jobError);
     }
 
     // Return all linked accounts (populated)
@@ -172,7 +200,34 @@ router.get('/transactions', authenticateToken, async (req, res) => {
     const maxPages = parseInt(req.query.maxPages) || 10;
     // For each account, fetch latest transactions and upsert
     for (const account of monoAccounts) {
-      const transactions = await fetchAllTransactions(account.accountId, MONO_SECRET_KEY, maxPages);
+      // Use lastSynced for incremental fetch
+      let startDate = account.lastSynced ? new Date(account.lastSynced).toISOString() : undefined;
+      let transactions = [];
+      if (startDate) {
+        // Fetch only new transactions since last sync
+        function formatDate(date) {
+          const d = new Date(date);
+          const day = String(d.getDate()).padStart(2, '0');
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const year = d.getFullYear();
+          return `${day}-${month}-${year}`;
+        }
+        let endDate = formatDate(new Date());
+        let formattedStart = formatDate(startDate);
+        let nextUrl = `${BASE_URL}/accounts/${account.accountId}/transactions?start=${encodeURIComponent(formattedStart)}&end=${encodeURIComponent(endDate)}`;
+        let page = 1;
+        while (nextUrl && page <= maxPages) {
+          const res = await axios.get(nextUrl, { headers: { 'mono-sec-key': MONO_SECRET_KEY } });
+          const data = res.data.data || [];
+          transactions = transactions.concat(data);
+          const meta = res.data.meta || {};
+          nextUrl = meta.next || null;
+          page++;
+        }
+      } else {
+        // No lastSynced, fetch all as before
+        transactions = await fetchAllTransactions(account.accountId, MONO_SECRET_KEY, maxPages);
+      }
       for (const tx of transactions) {
         await Transaction.findOneAndUpdate(
           { monoId: tx.id, monoAccount: account._id },
@@ -192,12 +247,28 @@ router.get('/transactions', authenticateToken, async (req, res) => {
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );
       }
+      // Update lastSynced to now
+      account.lastSynced = new Date();
+      await account.save();
     }
     // Fetch all transactions for the user, sorted by date desc
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const total = await Transaction.countDocuments({ user: user._id });
+    const totalPages = Math.ceil(total / limit);
     const allTransactions = await Transaction.find({ user: user._id })
       .populate('monoAccount')
-      .sort({ date: -1 });
-    res.json({ transactions: allTransactions });
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit);
+    res.json({
+      transactions: allTransactions,
+      page,
+      limit,
+      total,
+      totalPages
+    });
   } catch (err) {
     res.status(500).json({ error: err.response?.data || err.message });
   }

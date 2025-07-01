@@ -7,6 +7,7 @@ import { connectDB } from './config/database.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
 import monoRoutes from './routes/mono.js';
+import aiRoutes from './routes/ai.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 // Load environment variables
@@ -52,6 +53,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/mono', monoRoutes);
+app.use('/api/ai', aiRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -70,11 +72,26 @@ const startServer = async () => {
     // Connect to MongoDB
     await connectDB();
     
+    // Initialize MindsDB (optional - will be created on first use)
+    try {
+      const mindsdbService = (await import('./services/mindsdbService.js')).default;
+      const connected = await mindsdbService.connect();
+      if (connected) {
+        console.log('🧠 MindsDB service initialized');
+      } else {
+        console.log('💡 MindsDB will be initialized on first use');
+      }
+    } catch (mindsdbError) {
+      console.warn('⚠️ MindsDB not available:', mindsdbError.message);
+      console.log('💡 MindsDB will be initialized on first use');
+    }
+    
     app.listen(PORT, () => {
       console.log(`🚀 Wyse API server running on port ${PORT}`);
       console.log(`📊 Environment: ${process.env.NODE_ENV}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);
       console.log(`📧 API Base URL: http://localhost:${PORT}/api`);
+      console.log(`🤖 AI Endpoints: http://localhost:${PORT}/api/ai`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

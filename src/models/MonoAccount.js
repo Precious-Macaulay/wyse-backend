@@ -15,6 +15,7 @@ const monoAccountSchema = new mongoose.Schema({
   currency: String,
   bvn: String,
   linkedAt: { type: Date, default: Date.now },
+  lastSynced: { type: Date },
   meta: {
     data_status: String,
     auth_method: String,

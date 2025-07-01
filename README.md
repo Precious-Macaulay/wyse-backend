@@ -1,368 +1,102 @@
 # Wyse Backend API
 
-A secure, scalable backend API for the Wyse financial intelligence platform built with Node.js, Express, and MongoDB.
+This is the backend API for Wyse, a financial intelligence platform I built to help users connect multiple Nigerian bank accounts, manage transactions, and get insights using natural language AI.
 
-## 🚀 Features
+## Features
 
-- **Secure Authentication**: JWT-based authentication with email verification
-- **OTP System**: Email-based OTP for account verification
-- **User Management**: Complete user profile and preferences management
-- **Security Features**: Rate limiting, account locking, device tracking
-- **Email Service**: Automated email notifications and OTP delivery
-- **Input Validation**: Comprehensive request validation
-- **Error Handling**: Centralized error handling with detailed responses
+- Secure user authentication (JWT, OTP)
+- Multi-bank account linking via Mono API
+- Real-time transaction sync and management
+- Natural language search and chat over transactions (MindsDB integration)
+- Support for both OpenAI and Google Gemini AI engines
+- Per-user data isolation and privacy
+- Automatic background sync jobs
+- Robust error handling and security best practices
 
-## 📋 Prerequisites
+## Why I Built This
 
-- Node.js (v18 or higher)
-- MongoDB (local or cloud instance)
-- Email service (Gmail, SendGrid, etc.)
+I wanted to create a modern, privacy-focused financial dashboard that makes it easy for anyone to:
+- See all their bank accounts and transactions in one place
+- Ask questions like "How much did I spend on food last month?" and get instant answers
+- Use the latest AI models for semantic search and insights
 
-## 🛠️ Installation
+## Getting Started
 
-1. **Clone the repository**
+### Prerequisites
+- Node.js 18+
+- MongoDB (local or cloud)
+- MindsDB (for AI features)
+- OpenAI or Google Gemini API key
+- Mono API credentials
+
+### Installation
+1. Clone the repository:
    ```bash
    git clone <repository-url>
    cd wyse-backend
    ```
-
-2. **Install dependencies**
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-3. **Environment Setup**
+3. Copy the example environment file and fill in your config:
    ```bash
    cp env.example .env
+   # Edit .env with your keys and settings
    ```
-   
-   Edit `.env` file with your configuration:
-   ```env
-   # Server Configuration
-   PORT=3001
-   NODE_ENV=development
-
-   # MongoDB Configuration
-   MONGODB_URI=mongodb://localhost:27017/wyse
-
-   # JWT Configuration
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-   JWT_EXPIRES_IN=7d
-
-   # Email Configuration
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-app-password
-   EMAIL_FROM=Wyse <noreply@wyse.com>
-
-   # CORS Configuration
-   CORS_ORIGIN=http://localhost:5173
-   ```
-
-4. **Start the server**
+4. Start the server:
    ```bash
-   # Development
    npm run dev
-
-   # Production
-   npm start
    ```
 
-## 📚 API Documentation
+### MindsDB Setup
+- You can run MindsDB locally, with Docker, or use MindsDB Cloud.
+- Make sure your `.env` has the correct host, port, and API keys for your chosen AI engine.
 
-### Authentication Endpoints
+## API Overview
 
-#### POST `/api/auth/send-otp`
-Send OTP to email for verification.
+### Authentication
+- `POST /api/auth/send-otp` — Send OTP for email verification
+- `POST /api/auth/verify-otp` — Verify OTP
+- `POST /api/auth/signup` — Register
+- `POST /api/auth/signin` — Login
+- `POST /api/auth/reset-passcode` — Reset passcode
 
-**Request Body:**
-```json
-{
-  "email": "user@example.com"
-}
-```
+### User & Account Management
+- `GET /api/user/profile` — Get profile
+- `PUT /api/user/profile` — Update profile
+- `GET /api/user/preferences` — Get preferences
+- `PUT /api/user/preferences` — Update preferences
+- `POST /api/mono/exchange-code` — Link a bank account
+- `GET /api/mono/account-data` — Get account info
+- `GET /api/mono/transactions` — Get transactions
 
-**Response:**
-```json
-{
-  "message": "OTP sent successfully",
-  "email": "user@example.com"
-}
-```
+### AI & Insights
+- `POST /api/ai/query-transactions` — Ask questions about your transactions
+- `POST /api/ai/chat` — Chat with the AI about your finances
+- `GET /api/ai/engines` — List available AI engines
+- `POST /api/ai/switch-engine` — Switch AI engine
+- `GET /api/ai/evaluate` — Evaluate your knowledge base (admin only)
+- `POST /api/ai/setup` — (Re)initialize your AI setup (admin only)
 
-#### POST `/api/auth/verify-otp`
-Verify OTP for email verification.
+## How It Works
+- Every user gets a private knowledge base for their transactions (MindsDB).
+- All new and existing transactions are automatically synced to the knowledge base.
+- I use metadata columns for advanced filtering (date, category, amount, etc.).
+- Background jobs keep everything up to date.
+- You can use natural language to search, filter, and chat about your finances.
 
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "otp": "123456"
-}
-```
+## Deployment
+- For production, set `NODE_ENV=production` and use your production database and API keys.
+- You can use PM2 or any process manager to keep the server running.
 
-**Response:**
-```json
-{
-  "message": "OTP verified successfully",
-  "email": "user@example.com"
-}
-```
-
-#### POST `/api/auth/signup`
-Create new user account (requires email verification).
-
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "passcode": "123456"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Account created successfully",
-  "user": {
-    "id": "user_id",
-    "email": "user@example.com",
-    "isEmailVerified": true,
-    "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
-  },
-  "token": "jwt_token_here"
-}
-```
-
-#### POST `/api/auth/signin`
-Sign in user with email and passcode.
-
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "passcode": "123456"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Sign in successful",
-  "user": {
-    "id": "user_id",
-    "email": "user@example.com",
-    "isEmailVerified": true,
-    "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
-  },
-  "token": "jwt_token_here"
-}
-```
-
-#### POST `/api/auth/signout`
-Sign out user (requires authentication).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Response:**
-```json
-{
-  "message": "Sign out successful"
-}
-```
-
-#### GET `/api/auth/verify`
-Verify JWT token and return user info (requires authentication).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Response:**
-```json
-{
-  "message": "Token verified",
-  "user": {
-    "id": "user_id",
-    "email": "user@example.com",
-    "isEmailVerified": true,
-    "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
-  }
-}
-```
-
-### User Management Endpoints
-
-#### GET `/api/user/profile`
-Get user profile (requires authentication).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Response:**
-```json
-{
-  "message": "Profile retrieved successfully",
-  "user": {
-    "id": "user_id",
-    "email": "user@example.com",
-    "isEmailVerified": true,
-    "profile": {
-      "firstName": "John",
-      "lastName": "Doe",
-      "phone": "+1234567890",
-      "dateOfBirth": "1990-01-01T00:00:00.000Z"
-    },
-    "preferences": {
-      "notifications": {
-        "email": true,
-        "push": true,
-        "sms": false
-      },
-      "theme": "dark",
-      "currency": "NGN"
-    },
-    "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
-  }
-}
-```
-
-#### PUT `/api/user/profile`
-Update user profile (requires authentication).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Request Body:**
-```json
-{
-  "firstName": "John",
-  "lastName": "Doe",
-  "phone": "+1234567890",
-  "dateOfBirth": "1990-01-01"
-}
-```
-
-#### PUT `/api/user/preferences`
-Update user preferences (requires authentication).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Request Body:**
-```json
-{
-  "preferences": {
-    "notifications": {
-      "email": true,
-      "push": false,
-      "sms": true
-    },
-    "theme": "light",
-    "currency": "USD"
-  }
-}
-```
-
-## 🔒 Security Features
-
-- **JWT Authentication**: Secure token-based authentication
-- **Rate Limiting**: Prevents abuse with configurable limits
-- **Account Locking**: Automatic account lock after failed attempts
-- **Input Validation**: Comprehensive request validation
-- **CORS Protection**: Configurable cross-origin resource sharing
-- **Helmet Security**: Security headers for protection
-- **Password Hashing**: Bcrypt-based passcode hashing
-
-## 📧 Email Configuration
-
-The backend uses Nodemailer for sending emails. Configure your email service in the `.env` file:
-
-### Gmail Setup
-1. Enable 2-factor authentication on your Gmail account
-2. Generate an App Password
-3. Use the App Password in `EMAIL_PASS`
-
-### Other Email Services
-Update the email configuration in `.env`:
-```env
-EMAIL_HOST=your-smtp-host
-EMAIL_PORT=587
-EMAIL_USER=your-email@domain.com
-EMAIL_PASS=your-password
-EMAIL_FROM=Wyse <noreply@wyse.com>
-```
-
-## 🗄️ Database Schema
-
-### User Model
-- `email`: Unique email address
-- `passcode`: Hashed 6-digit passcode
-- `isEmailVerified`: Email verification status
-- `profile`: User profile information
-- `preferences`: User preferences and settings
-- `security`: Security-related data (devices, login attempts)
-- `timestamps`: Created and updated timestamps
-
-### OTP Model
-- `email`: Email address
-- `otp`: 6-digit verification code
-- `type`: OTP type (email_verification, password_reset, login)
-- `isUsed`: Usage status
-- `expiresAt`: Expiration timestamp
-- `attempts`: Verification attempts count
-
-## 🚀 Deployment
-
-### Environment Variables for Production
-```env
-NODE_ENV=production
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/wyse
-JWT_SECRET=your-production-jwt-secret
-CORS_ORIGIN=https://your-frontend-domain.com
-```
-
-### PM2 Deployment
-```bash
-npm install -g pm2
-pm2 start src/server.js --name "wyse-api"
-pm2 save
-pm2 startup
-```
-
-## 🧪 Testing
-
+## Testing
 ```bash
 npm test
 ```
 
-## 📝 License
+## Contributing
+This project is a personal build, but if you have ideas or spot issues, feel free to open an issue or pull request.
 
-MIT License - see LICENSE file for details.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📞 Support
-
-For support and questions, please contact the development team. 
+## License
+MIT 
