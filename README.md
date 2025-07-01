@@ -15,7 +15,7 @@ This is the backend API for Wyse, a financial intelligence platform I built to h
 
 ## Why I Built This
 
-I wanted to create a modern, privacy-focused financial dashboard that makes it easy for anyone to:
+I wanted to create a modern, privacy-focused financial dashboard that makes it easy for anyone and business of all size to:
 - See all their bank accounts and transactions in one place
 - Ask questions like "How much did I spend on food last month?" and get instant answers
 - Use the latest AI models for semantic search and insights
